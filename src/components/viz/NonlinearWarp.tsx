@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { scaleLinear } from 'd3-scale'
 import { VIZ } from '../../lib/viz/colors'
+import { Slider } from '../ui/Slider'
 import type { Vec } from './primitives'
 
 const SIZE = 480
@@ -22,20 +23,6 @@ type Warp = {
 }
 
 const WARPS: Warp[] = [
-  {
-    id: 'identity',
-    label: 'identity (linear)',
-    fn: (p) => p,
-    rules: { origin: true, parallel: true, spacing: true },
-    note: 'The control: nothing moves.',
-  },
-  {
-    id: 'shear',
-    label: 'shear (linear)',
-    fn: (p) => ({ x: p.x + 0.6 * p.y, y: p.y }),
-    rules: { origin: true, parallel: true, spacing: true },
-    note: "Linear, so all three rules hold. Look — same warped grid you've been dragging in chapter 01.",
-  },
   {
     id: 'translate',
     label: 'translate by (1, 0.5)',
@@ -81,6 +68,24 @@ const WARPS: Warp[] = [
     rules: { origin: true, parallel: false, spacing: true },
     note: 'A polar twist: every point gets rotated by an amount that depends on its distance from the origin. Origin is fixed, but parallel lines bend into spirals.',
   },
+  {
+    id: 'fisheye',
+    label: 'fisheye: pull radially toward origin',
+    fn: (p) => {
+      const r = Math.hypot(p.x, p.y)
+      const factor = r > 0 ? Math.atan(r) / r : 1
+      return { x: p.x * factor, y: p.y * factor }
+    },
+    rules: { origin: true, parallel: false, spacing: false },
+    note: 'A radial squeeze whose strength grows with distance from the origin. Origin is fixed, lines through the origin stay straight, but every other line curves and equal spacings collapse near the rim.',
+  },
+  {
+    id: 'shear',
+    label: 'shear (linear, for reference)',
+    fn: (p) => ({ x: p.x + 0.6 * p.y, y: p.y }),
+    rules: { origin: true, parallel: true, spacing: true },
+    note: "Linear, so all three rules hold. Same warped grid you've been dragging in chapter 01 — included as the control: morph t for this preset and watch a strict linear transformation unfold.",
+  },
 ]
 
 const ID_COLOR = '#1A1A1C'
@@ -89,9 +94,51 @@ function ruleColor(holds: boolean) {
   return holds ? VIZ.teal : VIZ.coral
 }
 
+/** Linear interpolation between identity and a warp function. */
+function morphed(fn: (p: Vec) => Vec, t: number, p: Vec): Vec {
+  if (t <= 0) return p
+  const q = fn(p)
+  return { x: p.x * (1 - t) + q.x * t, y: p.y * (1 - t) + q.y * t }
+}
+
 export function NonlinearWarp() {
   const [warpId, setWarpId] = useState<string>('translate')
+  const [t, setT] = useState(1)
+  const [playing, setPlaying] = useState(false)
   const warp = WARPS.find((w) => w.id === warpId) ?? WARPS[0]
+
+  // Reset t when changing preset so the user always sees the deformation grow.
+  useEffect(() => {
+    setPlaying(false)
+    setT(1)
+  }, [warpId])
+
+  // Animation loop for the play button.
+  useEffect(() => {
+    if (!playing) return
+    let raf = 0
+    let last = performance.now()
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000
+      last = now
+      setT((prev) => {
+        const next = prev + dt * 0.6
+        if (next >= 1) {
+          setPlaying(false)
+          return 1
+        }
+        return next
+      })
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [playing])
+
+  function play() {
+    setT(0)
+    requestAnimationFrame(() => setPlaying(true))
+  }
 
   const cells = useMemo(() => {
     const out: Array<{ id: string; pts: string; fill: string }> = []
@@ -105,14 +152,12 @@ export function NonlinearWarp() {
           { x: x0 + step, y: y0 },
           { x: x0 + step, y: y0 + step },
           { x: x0, y: y0 + step },
-        ].map((p) => warp.fn(p))
+        ].map((p) => morphed(warp.fn, t, p))
         const pts = corners
           .map(
-            (p) =>
-              `${xScale(p.x).toFixed(1)},${yScale(p.y).toFixed(1)}`,
+            (p) => `${xScale(p.x).toFixed(1)},${yScale(p.y).toFixed(1)}`,
           )
           .join(' ')
-        // Hue tied to the ORIGINAL coordinate, so the warp is legible.
         const hue =
           ((Math.floor(x0 + GRID) * 17 + Math.floor(y0 + GRID) * 23) % 360 +
             360) %
@@ -125,10 +170,8 @@ export function NonlinearWarp() {
       }
     }
     return out
-  }, [warp])
+  }, [warp, t])
 
-  // Two reference lines that started parallel (and horizontal) at y=1 and y=2.
-  // After warp, they may curve.
   const referenceLines = useMemo(() => {
     const samples = 80
     const lines: Array<{ id: string; d: string; color: string }> = []
@@ -136,7 +179,7 @@ export function NonlinearWarp() {
       const pts: string[] = []
       for (let s = 0; s <= samples; s++) {
         const x = -GRID + ((2 * GRID) * s) / samples
-        const p = warp.fn({ x, y: y0 })
+        const p = morphed(warp.fn, t, { x, y: y0 })
         const px = xScale(p.x).toFixed(1)
         const py = yScale(p.y).toFixed(1)
         pts.push(`${s === 0 ? 'M' : 'L'} ${px},${py}`)
@@ -148,15 +191,23 @@ export function NonlinearWarp() {
       })
     }
     return lines
-  }, [warp])
+  }, [warp, t])
 
-  // Origin marker
-  const origin = warp.fn({ x: 0, y: 0 })
+  const origin = morphed(warp.fn, t, { x: 0, y: 0 })
+
+  // The status pills describe the preset, except at t = 0 (genuine identity).
+  const showRules = t > 0.005
+  const tLabel =
+    t < 0.005
+      ? 'identity'
+      : t > 0.995
+        ? warp.id
+        : `${(t * 100).toFixed(0)}% morphed`
 
   return (
     <figure className="my-10 w-full">
       <div className="mx-auto max-w-[480px] space-y-3">
-        <div>
+        <div className="grid grid-cols-[1fr,auto] gap-3">
           <label className="block">
             <span className="mb-1 block font-mono text-[11px] uppercase tracking-wider text-mute">
               transformation
@@ -173,6 +224,14 @@ export function NonlinearWarp() {
               ))}
             </select>
           </label>
+          <button
+            type="button"
+            onClick={play}
+            disabled={playing}
+            className="self-end rounded-(--radius-button) border border-line bg-accent px-3 py-2 text-[12px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            {playing ? '…' : 'morph'}
+          </button>
         </div>
 
         <div className="aspect-square w-full">
@@ -208,7 +267,6 @@ export function NonlinearWarp() {
                   stroke="none"
                 />
               ))}
-              {/* reference lines (originally horizontal, originally parallel) */}
               {referenceLines.map((l) => (
                 <path
                   key={l.id}
@@ -221,23 +279,22 @@ export function NonlinearWarp() {
               ))}
             </g>
 
-            {/* faint reference grid lines for orientation */}
-            {TICKS.map((t) => (
+            {TICKS.map((tk) => (
               <line
-                key={`vx${t}`}
-                x1={xScale(t)}
-                x2={xScale(t)}
+                key={`vx${tk}`}
+                x1={xScale(tk)}
+                x2={xScale(tk)}
                 y1={yScale(DOMAIN[0])}
                 y2={yScale(DOMAIN[1])}
                 stroke={VIZ.line}
                 strokeWidth={1}
               />
             ))}
-            {TICKS.map((t) => (
+            {TICKS.map((tk) => (
               <line
-                key={`hy${t}`}
-                y1={yScale(t)}
-                y2={yScale(t)}
+                key={`hy${tk}`}
+                y1={yScale(tk)}
+                y2={yScale(tk)}
                 x1={xScale(DOMAIN[0])}
                 x2={xScale(DOMAIN[1])}
                 stroke={VIZ.line}
@@ -261,12 +318,11 @@ export function NonlinearWarp() {
               strokeWidth={1.25}
             />
 
-            {/* origin: where (0,0) ended up */}
             <circle
               cx={xScale(origin.x)}
               cy={yScale(origin.y)}
               r={5}
-              fill={ruleColor(warp.rules.origin)}
+              fill={ruleColor(!showRules || warp.rules.origin)}
               stroke={VIZ.surface}
               strokeWidth={2}
             />
@@ -275,25 +331,46 @@ export function NonlinearWarp() {
               y={yScale(origin.y) - 8}
               fontSize={11}
               fontFamily="var(--font-mono), monospace"
-              fill={ruleColor(warp.rules.origin)}
+              fill={ruleColor(!showRules || warp.rules.origin)}
             >
               T(0,0)
             </text>
           </svg>
         </div>
 
+        <Slider
+          label="t (morph from identity)"
+          min={0}
+          max={1}
+          step={0.01}
+          value={t}
+          onChange={(next) => {
+            setPlaying(false)
+            setT(next)
+          }}
+          display={tLabel}
+        />
+
         <div className="rounded-(--radius-card) border border-line bg-surface px-3 py-2.5">
           <div className="grid grid-cols-3 gap-2 font-mono text-[11px]">
             <Rule
               label="origin fixed"
-              ok={warp.rules.origin}
+              ok={!showRules || warp.rules.origin}
               colorOk={ID_COLOR}
             />
-            <Rule label="lines → lines" ok={warp.rules.parallel} />
-            <Rule label="even spacing" ok={warp.rules.spacing} />
+            <Rule
+              label="lines → lines"
+              ok={!showRules || warp.rules.parallel}
+            />
+            <Rule
+              label="even spacing"
+              ok={!showRules || warp.rules.spacing}
+            />
           </div>
           <p className="mt-3 text-[12px] leading-snug text-mute">
-            {warp.note}
+            {showRules
+              ? warp.note
+              : 'At t = 0 the transformation is the identity. Slide t up — or press morph — to watch the deformation grow.'}
           </p>
         </div>
       </div>
