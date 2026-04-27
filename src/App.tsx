@@ -20,6 +20,9 @@ const Chapter05 = lazy(
 const Chapter06 = lazy(
   () => import('./chapters/linear-algebra/06-determinant'),
 )
+const Chapter07 = lazy(
+  () => import('./chapters/linear-algebra/07-inverse-rank-null-space'),
+)
 
 function ScrollToTopOnNav() {
   const { pathname } = useLocation()
@@ -56,6 +59,10 @@ export default function App() {
             element={<Chapter05 />}
           />
           <Route path="/06-determinant" element={<Chapter06 />} />
+          <Route
+            path="/07-inverse-rank-null-space"
+            element={<Chapter07 />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

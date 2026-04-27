@@ -21,7 +21,7 @@ export const chapters: Chapter[] = [
   { id: '04-matrix-multiplication', number: '04', title: 'Matrix multiplication', act: 'la', status: 'live' },
   { id: '05-three-d-transformations', number: '05', title: 'Three-dimensional transformations', act: 'la', status: 'live' },
   { id: '06-determinant', number: '06', title: 'The determinant', act: 'la', status: 'live' },
-  { id: '07-inverse-rank-null-space', number: '07', title: 'Inverse, rank, null space', act: 'la', status: 'soon' },
+  { id: '07-inverse-rank-null-space', number: '07', title: 'Inverse, rank, null space', act: 'la', status: 'live' },
   { id: '08-dot-product', number: '08', title: 'Dot product, projections', act: 'la', status: 'soon' },
   { id: '09-change-of-basis', number: '09', title: 'Change of basis', act: 'la', status: 'soon' },
   { id: '10-eigenvectors-eigenvalues', number: '10', title: 'Eigenvectors and eigenvalues', act: 'la', status: 'soon' },
