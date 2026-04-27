@@ -65,7 +65,7 @@ export default function Chapter01() {
           dramatic — you just add the coordinates.
         </p>
 
-        <EqBlock tex="v + w \;=\; \begin{bmatrix} v_x \\ v_y \end{bmatrix} + \begin{bmatrix} w_x \\ w_y \end{bmatrix} \;=\; \begin{bmatrix} v_x + w_x \\ v_y + w_y \end{bmatrix}" />
+        <EqBlock tex="v + w = \begin{bmatrix} v_x \\ v_y \end{bmatrix} + \begin{bmatrix} w_x \\ w_y \end{bmatrix} = \begin{bmatrix} v_x + w_x \\ v_y + w_y \end{bmatrix}" />
 
         <p className="text-[17px] leading-[1.7] text-ink">
           The bridge between the two pictures is what makes vectors useful.
@@ -101,7 +101,7 @@ export default function Chapter01() {
           by the same number.
         </p>
 
-        <EqBlock tex="c \, v \;=\; c \begin{bmatrix} v_x \\ v_y \end{bmatrix} \;=\; \begin{bmatrix} c \, v_x \\ c \, v_y \end{bmatrix}" />
+        <EqBlock tex="c \begin{bmatrix} v_x \\ v_y \end{bmatrix} = \begin{bmatrix} c v_x \\ c v_y \end{bmatrix}" />
 
         <p className="text-[17px] leading-[1.7] text-ink">
           Two operations: addition, and scaling. That is it. Every other
