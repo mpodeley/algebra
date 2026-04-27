@@ -26,6 +26,9 @@ const Chapter07 = lazy(
 const Chapter08 = lazy(
   () => import('./chapters/linear-algebra/08-dot-product'),
 )
+const Chapter09 = lazy(
+  () => import('./chapters/linear-algebra/09-change-of-basis'),
+)
 
 function ScrollToTopOnNav() {
   const { pathname } = useLocation()
@@ -67,6 +70,7 @@ export default function App() {
             element={<Chapter07 />}
           />
           <Route path="/08-dot-product" element={<Chapter08 />} />
+          <Route path="/09-change-of-basis" element={<Chapter09 />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
