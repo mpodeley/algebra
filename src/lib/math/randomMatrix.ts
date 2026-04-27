@@ -59,3 +59,55 @@ export function sampleGOEEigenvalues(N: number): number[] {
   const s = Math.sqrt(N)
   return eig.map((x) => x / s)
 }
+
+export type EntryDistribution = 'gaussian' | 'uniform' | 'bernoulli'
+
+/**
+ * Single sample from a distribution with mean 0 and variance 1.
+ *   - gaussian:  Box-Muller standard normal
+ *   - uniform:   U(-√3, √3) (variance = 1)
+ *   - bernoulli: ±1 with equal probability
+ */
+export function unitSample(dist: EntryDistribution): number {
+  switch (dist) {
+    case 'gaussian':
+      return gaussianSample()
+    case 'uniform':
+      return (Math.random() - 0.5) * 2 * Math.sqrt(3)
+    case 'bernoulli':
+      return Math.random() < 0.5 ? -1 : 1
+  }
+}
+
+/**
+ * Wigner matrix with arbitrary symmetric entry distribution. Diagonal
+ * entries have variance 1; off-diagonal entries have variance 1/2 — same
+ * convention as `generateGOE`. Eigenvalues divided by √N converge to the
+ * Wigner semicircle on [−2, 2] regardless of the distribution.
+ */
+export function generateWigner(
+  N: number,
+  dist: EntryDistribution = 'gaussian',
+): number[][] {
+  const M: number[][] = Array.from({ length: N }, () => new Array(N).fill(0))
+  const offDiagScale = Math.SQRT1_2
+  for (let i = 0; i < N; i++) {
+    M[i][i] = unitSample(dist)
+    for (let j = i + 1; j < N; j++) {
+      const v = unitSample(dist) * offDiagScale
+      M[i][j] = v
+      M[j][i] = v
+    }
+  }
+  return M
+}
+
+export function sampleWignerEigenvalues(
+  N: number,
+  dist: EntryDistribution,
+): number[] {
+  const M = generateWigner(N, dist)
+  const eig = eigenvaluesOf(M)
+  const s = Math.sqrt(N)
+  return eig.map((x) => x / s)
+}

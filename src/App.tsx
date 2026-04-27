@@ -40,6 +40,7 @@ const ChapterR02 = lazy(() => import('./chapters/rmt/r02-experiment'))
 const ChapterR03 = lazy(() => import('./chapters/rmt/r03-semicircle'))
 const ChapterR04 = lazy(() => import('./chapters/rmt/r04-level-repulsion'))
 const ChapterR05 = lazy(() => import('./chapters/rmt/r05-three-ensembles'))
+const ChapterR06 = lazy(() => import('./chapters/rmt/r06-universality'))
 
 function ScrollToTopOnNav() {
   const { pathname } = useLocation()
@@ -101,6 +102,7 @@ export default function App() {
             path="/r05-three-ensembles"
             element={<ChapterR05 />}
           />
+          <Route path="/r06-universality" element={<ChapterR06 />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
