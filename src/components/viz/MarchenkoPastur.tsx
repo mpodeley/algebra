@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { scaleLinear } from 'd3-scale'
-import { multiply, transpose } from 'mathjs'
 import { VIZ } from '../../lib/viz/colors'
 import {
   eigenvaluesOf,
   gaussianSample,
+  matMul,
+  matTranspose,
 } from '../../lib/math/randomMatrix'
 import { Slider } from '../ui/Slider'
 
@@ -35,8 +36,7 @@ function generateGaussianRect(rows: number, cols: number): number[][] {
 /** Sample covariance eigenvalues for a single (N×T) Gaussian matrix R. */
 function sampleCovEigenvalues(N: number, T: number): number[] {
   const R = generateGaussianRect(N, T)
-  // C = (1/T) R R^T
-  const RRt = multiply(R, transpose(R)) as unknown as number[][]
+  const RRt = matMul(R, matTranspose(R))
   const eigs = eigenvaluesOf(RRt).map((e) => e / T)
   return eigs
 }

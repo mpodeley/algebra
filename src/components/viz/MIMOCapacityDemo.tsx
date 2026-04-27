@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react'
 import { scaleLinear } from 'd3-scale'
-import { multiply, transpose } from 'mathjs'
 import { VIZ } from '../../lib/viz/colors'
-import { eigenvaluesOf, gaussianSample } from '../../lib/math/randomMatrix'
+import {
+  eigenvaluesOf,
+  gaussianSample,
+  matMul,
+  matTranspose,
+} from '../../lib/math/randomMatrix'
 import { Slider } from '../ui/Slider'
 
 const WIDTH = 480
@@ -10,7 +14,7 @@ const HEIGHT = 280
 const PAD_X = 40
 const PAD_Y = 28
 const N_VALUES = [1, 2, 3, 4, 6, 8, 10, 12]
-const SAMPLES_PER_N = 8
+const SAMPLES_PER_N = 6
 
 function generateGaussianNxN(N: number): number[][] {
   const M: number[][] = Array.from({ length: N }, () => new Array(N))
@@ -24,28 +28,13 @@ function generateGaussianNxN(N: number): number[][] {
 
 function capacityFor(H: number[][], snrLinear: number): number {
   const N = H.length
-  const HHt = multiply(H, transpose(H)) as unknown as number[][]
+  const HHt = matMul(H, matTranspose(H))
   const eigs = eigenvaluesOf(HHt)
   let cap = 0
   for (const lambda of eigs) {
     cap += Math.log2(1 + (snrLinear / N) * Math.max(lambda, 0))
   }
   return cap
-}
-
-function asymptoticCapacity(N: number, snrLinear: number): number {
-  // For q = 1 (square H), the asymptotic capacity per receive antenna is
-  // a known integral against the Marchenko-Pastur density. The simple
-  // closed-form approximation suffices for our visual:
-  //   C/N ≈ 2 log2(1 + ρ - f) - log2(e) f / (4ρ)  with f as below.
-  // We keep it compact: use a small precomputed approximation.
-  const rho = snrLinear
-  const f =
-    Math.pow(Math.sqrt(rho * (Math.sqrt(1 + 4 * rho) + 1) / 2 + 1) - 1, 2)
-  const perAntenna =
-    2 * Math.log2(1 + rho - f) -
-    (Math.log2(Math.E) * f) / (4 * Math.max(rho, 1e-9))
-  return N * perAntenna
 }
 
 export function MIMOCapacityDemo() {
@@ -71,7 +60,7 @@ export function MIMOCapacityDemo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snrLinear, seed])
 
-  const yMax = Math.max(...data.points.map((p) => p.cap)) * 1.1
+  const yMax = Math.max(...data.points.map((p) => p.cap), 1) * 1.1
   const xScale = scaleLinear()
     .domain([0, N_VALUES[N_VALUES.length - 1] + 1])
     .range([PAD_X, WIDTH - PAD_X])
@@ -86,12 +75,15 @@ export function MIMOCapacityDemo() {
     )
     .join(' ')
 
-  // Asymptotic curve: y = N * c(rho)
-  const asymptoticPath = (() => {
+  // Single-antenna baseline: log2(1 + ρ). The mean curve should sit
+  // visibly above this, illustrating multi-antenna gain.
+  const baselinePath = (() => {
     const pts: string[] = []
     for (const N of N_VALUES) {
-      const y = asymptoticCapacity(N, snrLinear)
-      pts.push(`${pts.length === 0 ? 'M' : 'L'} ${xScale(N).toFixed(1)},${yScale(Math.min(y, yMax)).toFixed(1)}`)
+      const y = N * Math.log2(1 + snrLinear)
+      pts.push(
+        `${pts.length === 0 ? 'M' : 'L'} ${xScale(N).toFixed(1)},${yScale(Math.min(y, yMax)).toFixed(1)}`,
+      )
     }
     return pts.join(' ')
   })()
@@ -120,7 +112,6 @@ export function MIMOCapacityDemo() {
               stroke={VIZ.lineStrong}
             />
 
-            {/* x-ticks */}
             {[2, 4, 6, 8, 10, 12].map((t) => (
               <g key={t}>
                 <line
@@ -162,7 +153,6 @@ export function MIMOCapacityDemo() {
               capacity (bits / use)
             </text>
 
-            {/* sample points */}
             {data.points.map((p, i) => (
               <circle
                 key={i}
@@ -174,7 +164,6 @@ export function MIMOCapacityDemo() {
               />
             ))}
 
-            {/* mean line */}
             <path
               d={meanPath}
               fill="none"
@@ -183,7 +172,7 @@ export function MIMOCapacityDemo() {
               strokeLinecap="round"
             />
             <path
-              d={asymptoticPath}
+              d={baselinePath}
               fill="none"
               stroke={VIZ.coral}
               strokeWidth={1.5}
@@ -191,8 +180,7 @@ export function MIMOCapacityDemo() {
               strokeDasharray="4 4"
             />
 
-            {/* legend */}
-            <g transform={`translate(${WIDTH - PAD_X - 130}, ${PAD_Y + 4})`}>
+            <g transform={`translate(${WIDTH - PAD_X - 150}, ${PAD_Y + 4})`}>
               <line
                 x1={0}
                 y1={4}
@@ -208,7 +196,7 @@ export function MIMOCapacityDemo() {
                 fontFamily="var(--font-mono), monospace"
                 fill={VIZ.teal}
               >
-                empirical mean
+                MIMO mean
               </text>
               <line
                 x1={0}
@@ -226,7 +214,7 @@ export function MIMOCapacityDemo() {
                 fontFamily="var(--font-mono), monospace"
                 fill={VIZ.coral}
               >
-                asymptote
+                N · log₂(1+ρ)
               </text>
             </g>
           </svg>

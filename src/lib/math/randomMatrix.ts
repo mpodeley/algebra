@@ -111,3 +111,33 @@ export function sampleWignerEigenvalues(
   const s = Math.sqrt(N)
   return eig.map((x) => x / s)
 }
+
+/** Plain matrix multiply — avoids mathjs type ambiguity on Array vs Matrix. */
+export function matMul(A: number[][], B: number[][]): number[][] {
+  const m = A.length
+  const inner = B.length
+  const n = B[0].length
+  const C: number[][] = Array.from({ length: m }, () => new Array(n).fill(0))
+  for (let i = 0; i < m; i++) {
+    for (let k = 0; k < inner; k++) {
+      const aik = A[i][k]
+      for (let j = 0; j < n; j++) {
+        C[i][j] += aik * B[k][j]
+      }
+    }
+  }
+  return C
+}
+
+/** Plain transpose. */
+export function matTranspose(A: number[][]): number[][] {
+  const m = A.length
+  const n = A[0].length
+  const T: number[][] = Array.from({ length: n }, () => new Array(m))
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      T[j][i] = A[i][j]
+    }
+  }
+  return T
+}

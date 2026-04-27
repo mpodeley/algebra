@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { ChapterNav } from './components/layout/ChapterNav'
 import { ScrollProgress } from './components/layout/ScrollProgress'
+import { ErrorBoundary } from './components/layout/ErrorBoundary'
 import { Hero } from './chapters/intro/Hero'
 
 const Chapter01 = lazy(() => import('./chapters/linear-algebra/01-vectors'))
@@ -59,6 +60,7 @@ export default function App() {
       <ChapterNav />
       <ScrollToTopOnNav />
       <Suspense fallback={<RouteLoading />}>
+        <ErrorBoundary>
         <Routes>
           <Route path="/" element={<Hero />} />
           <Route path="/01-vectors" element={<Chapter01 />} />
@@ -109,6 +111,7 @@ export default function App() {
           <Route path="/r08-riemann" element={<ChapterR08 />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </ErrorBoundary>
       </Suspense>
     </HashRouter>
   )
