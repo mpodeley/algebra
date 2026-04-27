@@ -32,6 +32,9 @@ const Chapter09 = lazy(
 const Chapter10 = lazy(
   () => import('./chapters/linear-algebra/10-eigenvectors-eigenvalues'),
 )
+const Chapter11 = lazy(
+  () => import('./chapters/linear-algebra/11-abstract-vector-spaces'),
+)
 
 function ScrollToTopOnNav() {
   const { pathname } = useLocation()
@@ -77,6 +80,10 @@ export default function App() {
           <Route
             path="/10-eigenvectors-eigenvalues"
             element={<Chapter10 />}
+          />
+          <Route
+            path="/11-abstract-vector-spaces"
+            element={<Chapter11 />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
