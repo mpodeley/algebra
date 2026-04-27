@@ -4,6 +4,7 @@ import { Section } from '../../components/layout/Section'
 import { KeyInsight } from '../../components/layout/KeyInsight'
 import { Caption } from '../../components/ui/Caption'
 import { Eq, EqBlock } from '../../components/ui/Equation'
+import { PrimesFromZeros } from '../../components/viz/PrimesFromZeros'
 import { RiemannZeroSpacing } from '../../components/viz/RiemannZeroSpacing'
 import { ACT_LABEL } from '../../lib/content'
 
@@ -45,13 +46,59 @@ export default function ChapterR08() {
         </p>
 
         <p className="mt-6 text-[17px] leading-[1.7] text-ink">
-          For our purposes, the question is more limited: what does the
-          <em> distribution</em> of those zeros look like, taking the
-          critical-line conjecture for granted? The first few imaginary
-          parts are 14.13, 21.02, 25.01, 30.42, and so on, marching off
-          to infinity with a density that grows logarithmically. Local
-          spacings between consecutive zeros, after appropriate
-          normalization, look like — well, look at them.
+          The connection between the two is concrete enough to draw.
+          Riemann&apos;s <em>explicit formula</em> reconstructs the
+          step-by-step prime jumps as a sum over the zeros:
+        </p>
+
+        <EqBlock tex="\psi(x) \;=\; x \;-\; \sum_{\rho} \frac{x^{\rho}}{\rho} \;-\; \log(2\pi) \;-\; \tfrac{1}{2}\log(1 - x^{-2})" />
+
+        <p className="text-[17px] leading-[1.7] text-ink">
+          where{' '}
+          <Eq tex="\psi(x) = \sum_{p^k \leq x} \log p" /> is the
+          Chebyshev function — a step function that jumps by{' '}
+          <Eq tex="\log p" /> at every prime power — and the sum runs
+          over the nontrivial zeros{' '}
+          <Eq tex="\rho = \tfrac{1}{2} + i\gamma" />. Each zero
+          contributes a single oscillation of the form{' '}
+          <Eq tex="\sqrt{x}\,\cos(\gamma \log x)/(\tfrac{1}{4} + \gamma^2)" />.
+          Truncate the sum to <em>N</em> zeros and you get a smooth
+          approximation to <Eq tex="\psi(x)" /> that is more accurate
+          the larger you take <em>N</em>.
+        </p>
+      </Section>
+
+      <Section width="wide">
+        <PrimesFromZeros />
+        <Caption>
+          The teal step is the actual <Eq tex="\psi(x)" />: it jumps by{' '}
+          <Eq tex="\log p" /> at each prime power. The dashed line is{' '}
+          <em>y = x</em>, the leading term of the explicit formula. The
+          coral curve is the partial sum using the first <em>N</em>{' '}
+          zeros; slide <em>N</em> from 0 upward and watch the smooth
+          line grow oscillations until it approaches the step function.
+          By <em>N ≈ 30</em> the coral has acquired enough harmonic
+          content to track every individual prime jump.
+        </Caption>
+      </Section>
+
+      <Section width="prose" className="py-12">
+        <p className="text-[17px] leading-[1.7] text-ink">
+          That widget is the central conceptual fact about the zeros: they
+          are <em>spectral data</em>. Each zero contributes a wave; the
+          wave&apos;s frequency is the imaginary part <em>γ</em> and its
+          phase places one bump near each prime. The primes are encoded in
+          the zeros the way a sound wave is encoded in its Fourier
+          transform.
+        </p>
+
+        <p className="mt-6 text-[17px] leading-[1.7] text-ink">
+          The natural follow-up question is therefore: <em>where</em> do
+          the zeros sit, statistically, on the critical line? The first
+          few imaginary parts are 14.13, 21.02, 25.01, 30.42, marching
+          off to infinity with a density that grows logarithmically.
+          Their local spacings, after appropriate normalization, look like
+          — well, look at them.
         </p>
       </Section>
 
