@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@import 'katex/dist/katex.min.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-bg: #fafaf7;
+  --color-bg-dark: #0f0f10;
+  --color-surface: #ffffff;
+  --color-surface-dark: #1a1a1c;
+  --color-ink: #1a1a1c;
+  --color-ink-dark: #ededed;
+  --color-mute: #6e6e70;
+  --color-line: rgba(26, 26, 28, 0.08);
+  --color-line-dark: rgba(237, 237, 237, 0.1);
+
+  --color-accent: #0f6e56;
+  --color-accent-soft: rgba(15, 110, 86, 0.08);
+  --color-accent-line: rgba(15, 110, 86, 0.32);
+
+  --color-viz-blue: #378add;
+  --color-viz-teal: #1d9e75;
+  --color-viz-coral: #d85a30;
+  --color-viz-amber: #ba7517;
+  --color-viz-purple: #7f77dd;
+
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
+  --font-mono:
+    'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Consolas,
+    monospace;
+  --font-serif:
+    'Source Serif 4', 'Source Serif Pro', ui-serif, Georgia, serif;
+
+  --radius-card: 12px;
+  --radius-button: 8px;
+
+  --container-prose: 38rem;
+  --container-wide: 60rem;
+}
+
+html {
+  scroll-padding-top: 64px;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+/* Math typography: KaTeX inherits a slightly larger default that looks
+   too heavy next to 17px Inter prose. Trim it. */
+.katex {
+  font-size: 1em;
+}
