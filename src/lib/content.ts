@@ -29,7 +29,7 @@ export const chapters: Chapter[] = [
 
   { id: 'r01-wigner', number: '12', title: "Wigner's gambit", act: 'rmt', status: 'live' },
   { id: 'r02-experiment', number: '13', title: 'The experiment', act: 'rmt', status: 'live' },
-  { id: 'r03-semicircle', number: '14', title: 'The semicircle law', act: 'rmt', status: 'soon' },
+  { id: 'r03-semicircle', number: '14', title: 'The semicircle law', act: 'rmt', status: 'live' },
   { id: 'r04-level-repulsion', number: '15', title: 'Level repulsion', act: 'rmt', status: 'soon' },
   { id: 'r05-three-ensembles', number: '16', title: 'Three ensembles', act: 'rmt', status: 'soon' },
   { id: 'r06-universality', number: '17', title: 'Universality', act: 'rmt', status: 'soon' },
