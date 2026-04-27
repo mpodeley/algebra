@@ -36,6 +36,7 @@ const Chapter11 = lazy(
   () => import('./chapters/linear-algebra/11-abstract-vector-spaces'),
 )
 const ChapterR01 = lazy(() => import('./chapters/rmt/r01-wigner'))
+const ChapterR02 = lazy(() => import('./chapters/rmt/r02-experiment'))
 
 function ScrollToTopOnNav() {
   const { pathname } = useLocation()
@@ -87,6 +88,7 @@ export default function App() {
             element={<Chapter11 />}
           />
           <Route path="/r01-wigner" element={<ChapterR01 />} />
+          <Route path="/r02-experiment" element={<ChapterR02 />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

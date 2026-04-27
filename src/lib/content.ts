@@ -28,7 +28,7 @@ export const chapters: Chapter[] = [
   { id: '11-abstract-vector-spaces', number: '11', title: 'Abstract vector spaces', act: 'la', status: 'live' },
 
   { id: 'r01-wigner', number: '12', title: "Wigner's gambit", act: 'rmt', status: 'live' },
-  { id: 'r02-experiment', number: '13', title: 'The experiment', act: 'rmt', status: 'soon' },
+  { id: 'r02-experiment', number: '13', title: 'The experiment', act: 'rmt', status: 'live' },
   { id: 'r03-semicircle', number: '14', title: 'The semicircle law', act: 'rmt', status: 'soon' },
   { id: 'r04-level-repulsion', number: '15', title: 'Level repulsion', act: 'rmt', status: 'soon' },
   { id: 'r05-three-ensembles', number: '16', title: 'Three ensembles', act: 'rmt', status: 'soon' },
