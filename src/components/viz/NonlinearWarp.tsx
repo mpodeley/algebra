@@ -172,6 +172,41 @@ export function NonlinearWarp() {
     return out
   }, [warp, t])
 
+  // Warped grid lines: every integer-coordinate line in the original space,
+  // sampled at high density and morphed by the current t.
+  const gridLines = useMemo(() => {
+    const samples = 60
+    const lines: Array<{ id: string; d: string }> = []
+    // originally-vertical lines x = i
+    for (let i = -GRID; i <= GRID; i++) {
+      const pts: string[] = []
+      for (let s = 0; s <= samples; s++) {
+        const y = -GRID + ((2 * GRID) * s) / samples
+        const p = morphed(warp.fn, t, { x: i, y })
+        const px = xScale(p.x).toFixed(1)
+        const py = yScale(p.y).toFixed(1)
+        pts.push(`${s === 0 ? 'M' : 'L'} ${px},${py}`)
+      }
+      lines.push({ id: `vx-${i}`, d: pts.join(' ') })
+    }
+    // originally-horizontal lines y = j
+    for (let j = -GRID; j <= GRID; j++) {
+      const pts: string[] = []
+      for (let s = 0; s <= samples; s++) {
+        const x = -GRID + ((2 * GRID) * s) / samples
+        const p = morphed(warp.fn, t, { x, y: j })
+        const px = xScale(p.x).toFixed(1)
+        const py = yScale(p.y).toFixed(1)
+        pts.push(`${s === 0 ? 'M' : 'L'} ${px},${py}`)
+      }
+      lines.push({ id: `hy-${j}`, d: pts.join(' ') })
+    }
+    return lines
+  }, [warp, t])
+
+  // The two amber reference lines (originally horizontal at y = 1 and y = 2)
+  // stay highlighted on top of the warped grid so the parallel-stays-parallel
+  // failure is unmistakable.
   const referenceLines = useMemo(() => {
     const samples = 80
     const lines: Array<{ id: string; d: string; color: string }> = []
@@ -267,14 +302,26 @@ export function NonlinearWarp() {
                   stroke="none"
                 />
               ))}
+              {/* warped integer gridlines */}
+              {gridLines.map((l) => (
+                <path
+                  key={l.id}
+                  d={l.d}
+                  fill="none"
+                  stroke={VIZ.lineStrong}
+                  strokeOpacity={0.5}
+                  strokeWidth={1}
+                />
+              ))}
+              {/* highlighted reference pair (originally horizontal, originally parallel) */}
               {referenceLines.map((l) => (
                 <path
                   key={l.id}
                   d={l.d}
                   fill="none"
                   stroke={l.color}
-                  strokeWidth={2}
-                  strokeOpacity={0.85}
+                  strokeWidth={2.25}
+                  strokeOpacity={0.9}
                 />
               ))}
             </g>
