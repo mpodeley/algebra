@@ -24,7 +24,7 @@ export const chapters: Chapter[] = [
   { id: '07-inverse-rank-null-space', number: '07', title: 'Inverse, rank, null space', act: 'la', status: 'live' },
   { id: '08-dot-product', number: '08', title: 'Dot product, projections', act: 'la', status: 'live' },
   { id: '09-change-of-basis', number: '09', title: 'Change of basis', act: 'la', status: 'live' },
-  { id: '10-eigenvectors-eigenvalues', number: '10', title: 'Eigenvectors and eigenvalues', act: 'la', status: 'soon' },
+  { id: '10-eigenvectors-eigenvalues', number: '10', title: 'Eigenvectors and eigenvalues', act: 'la', status: 'live' },
   { id: '11-abstract-vector-spaces', number: '11', title: 'Abstract vector spaces', act: 'la', status: 'soon' },
 
   { id: 'r01-wigner', number: '12', title: "Wigner's gambit", act: 'rmt', status: 'soon' },
