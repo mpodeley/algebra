@@ -6,6 +6,7 @@ import { Caption } from '../../components/ui/Caption'
 import { Eq, EqBlock } from '../../components/ui/Equation'
 import { VectorPlayground } from '../../components/viz/VectorPlayground'
 import { ScalarStretch } from '../../components/viz/ScalarStretch'
+import { GridTransform } from '../../components/viz/GridTransform'
 import { ACT_LABEL, getNextChapter } from '../../lib/content'
 
 export default function Chapter01() {
@@ -123,11 +124,72 @@ export default function Chapter01() {
         </KeyInsight>
 
         <p className="text-[17px] leading-[1.7] text-ink">
-          The arrow picture is a good first home for these rules, but it is
-          not the only one — and that is the punchline of the chapter eleven
-          chapters from now. For now, stay in the plane and the arrows.
-          Next, we ask the obvious follow-up: given two vectors and the two
-          operations, which points can you reach?
+          That promise — that everything else builds out of these two
+          operations — is easier to swallow once you watch what they can
+          do together. Pick two vectors and call them <Eq tex="\hat{\imath}" />{' '}
+          (i-hat) and <Eq tex="\hat{\jmath}" /> (j-hat). For now they are
+          the standard basis: the arrows that point one unit east and one
+          unit north. Every other point in the plane is then determined,
+          because every other point is some combination
+        </p>
+
+        <EqBlock tex="a \, \hat{\imath} \;+\; b \, \hat{\jmath}." />
+
+        <p className="text-[17px] leading-[1.7] text-ink">
+          Two scalings and one addition; that is the entire vocabulary. So
+          if you slide <Eq tex="\hat{\imath}" /> or{' '}
+          <Eq tex="\hat{\jmath}" /> somewhere new, every other point has
+          to follow — because every other point was always <em>a</em>{' '}
+          copies of <Eq tex="\hat{\imath}" /> plus <em>b</em> copies of{' '}
+          <Eq tex="\hat{\jmath}" />.
+        </p>
+      </Section>
+
+      <Section width="wide">
+        <GridTransform showUnitSquare />
+        <Caption>
+          Each colored tile started life as a unit square anchored at
+          integer coordinates. Drag <Eq tex="\hat{\imath}" /> or{' '}
+          <Eq tex="\hat{\jmath}" /> and every tile follows — same colors,
+          same labels, new shape. The dashed square at the origin is the
+          unit square; everything else is just <em>a</em> copies of one
+          basis vector plus <em>b</em> copies of the other.
+        </Caption>
+      </Section>
+
+      <Section width="prose" className="py-12">
+        <p className="text-[17px] leading-[1.7] text-ink">
+          You will see this colored grid often. Whenever it appears, two
+          rules are true no matter how you have warped it: the origin
+          never moves, and lines that started parallel are still parallel.
+          A warp that respects those rules is called a{' '}
+          <em>linear transformation</em> of the plane, and it is the
+          protagonist of the next several chapters.
+        </p>
+
+        <KeyInsight>
+          <p>
+            Choose <Eq tex="\hat{\imath}" /> and <Eq tex="\hat{\jmath}" />.
+            You have just chosen a linear transformation of the entire
+            plane. Choose differently, and the entire plane redraws itself
+            the same way.
+          </p>
+        </KeyInsight>
+
+        <p className="text-[17px] leading-[1.7] text-ink">
+          Three things to play with before turning the page. Drag the two
+          basis vectors so that they point in the same direction — what
+          happens to the grid? Now keep them perpendicular but rotated
+          together: does the area of the unit square change? Now flip just
+          one of them through the origin: what does that do to the
+          orientation of the grid? The answers will, in their own time,
+          turn into the chapters on span, on rank, and on the determinant.
+        </p>
+
+        <p className="text-[17px] leading-[1.7] text-ink">
+          Before any of those, the obvious next move: when do two vectors
+          give you the whole plane, and when do they give you only a line?
+          That is what chapter two is about.
         </p>
       </Section>
 
