@@ -1,16 +1,56 @@
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { ChapterNav } from './components/layout/ChapterNav'
+import { ScrollProgress } from './components/layout/ScrollProgress'
 import { Hero } from './chapters/intro/Hero'
-import { IntroPlaceholder } from './chapters/intro/IntroPlaceholder'
+
+const Chapter01 = lazy(() => import('./chapters/linear-algebra/01-vectors'))
+
+function ScrollToTopOnNav() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
 
 export default function App() {
   return (
     <HashRouter>
+      <ScrollProgress />
       <ChapterNav />
-      <Routes>
-        <Route path="/" element={<Hero />} />
-        <Route path="/intro" element={<IntroPlaceholder />} />
-      </Routes>
+      <ScrollToTopOnNav />
+      <Suspense fallback={<RouteLoading />}>
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/01-vectors" element={<Chapter01 />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </HashRouter>
+  )
+}
+
+function RouteLoading() {
+  return (
+    <div className="mx-auto max-w-(--container-prose) px-5 py-32 text-center text-sm text-mute">
+      Loading…
+    </div>
+  )
+}
+
+function NotFound() {
+  return (
+    <main className="mx-auto max-w-(--container-prose) px-5 py-24">
+      <p className="font-mono text-[12px] uppercase tracking-[0.16em] text-mute">
+        404
+      </p>
+      <h1 className="mt-3 font-serif text-3xl text-ink">
+        That chapter isn&apos;t live yet.
+      </h1>
+      <p className="mt-4 text-mute">
+        Open the Chapters menu to see what&apos;s available.
+      </p>
+    </main>
   )
 }
