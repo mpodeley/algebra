@@ -5,6 +5,7 @@ import { KeyInsight } from '../../components/layout/KeyInsight'
 import { Caption } from '../../components/ui/Caption'
 import { Eq, EqBlock } from '../../components/ui/Equation'
 import { ThreeDPreview } from '../../components/viz/ThreeDPreview'
+import { GridTransform3D } from '../../components/viz/GridTransform3D'
 import { ACT_LABEL, getNextChapter } from '../../lib/content'
 
 export default function Chapter05() {
@@ -62,6 +63,33 @@ export default function Chapter05() {
           along for the ride.
         </p>
 
+        <p className="mt-6 text-[17px] leading-[1.7] text-ink">
+          The widget below makes that visceral. Pick a transformation
+          from the menu, hit <em>morph from identity</em>, and watch the
+          unit cube and the surrounding integer grid deform together
+          into the new shape. The camera sliders rotate the whole
+          post-transformation scene so you can look at the warp from
+          different angles.
+        </p>
+      </Section>
+
+      <Section width="wide">
+        <GridTransform3D />
+        <Caption>
+          Each preset is a 3×3 matrix; its three columns are written as{' '}
+          <em>î</em>, <em>ĵ</em>, <em>k̂</em>&apos;s images, and every
+          other point follows by linear combination. The faint grid is
+          the integer lattice <Eq tex="\mathbb{Z}^3" /> dragged through
+          the transformation. The two surprising presets at the bottom of
+          the menu are the <em>flip</em> (negative determinant: the
+          orientation of the cube has been mirrored) and the{' '}
+          <em>collapse</em> (zero determinant: the entire 3D space has
+          been crushed onto a 2D plane, exactly as the rank-1 line
+          collapse in chapter 07 but one dimension up).
+        </Caption>
+      </Section>
+
+      <Section width="prose" className="py-12">
         <KeyInsight>
           <p>
             The story does not depend on the dimension. Two columns or two
@@ -72,22 +100,24 @@ export default function Chapter05() {
         </KeyInsight>
 
         <p className="text-[17px] leading-[1.7] text-ink">
-          We will not draw a deformable 3D grid here. The reason is
-          partly perceptual — three-dimensional grids are crowded — and
-          partly practical: nothing the next several chapters need is
-          easier to see in 3D than in 2D. The 2D widgets will keep
-          driving the story. By the time we reach the random-matrix
-          chapters in act two, dimensions will run into the hundreds and
-          we will have given up on direct visualization anyway, leaning
-          on statistics of the spectrum instead.
+          A small handle to take with you, before chapter 06 properly
+          introduces the determinant: in 3D, the determinant measures
+          the signed <em>volume</em> of the unit cube — and the cube
+          above is exactly that probe. Watch the cube while you scrub
+          the morph slider. When the determinant is two, the cube has
+          twice the volume; when it is negative, the cube has been
+          mirrored through a plane; when it is zero, the cube has been
+          flattened.
         </p>
 
         <p className="mt-6 text-[17px] leading-[1.7] text-ink">
-          A small handle to take with you: in 3D, the determinant we
-          have been threatening to define properly will measure not the
-          signed area of a unit square, but the signed{' '}
-          <em>volume</em> of a unit cube. The next chapter, finally,
-          gives the determinant the chapter it has earned.
+          By the time we reach the random-matrix chapters in act two,
+          dimensions will run into the hundreds and we will have given
+          up on direct visualization, leaning on statistics of the
+          spectrum instead. The intuition we are building here — that
+          a transformation is what it does to a basis, that volumes
+          scale by the determinant — is meant to survive the loss of
+          the picture.
         </p>
       </Section>
 

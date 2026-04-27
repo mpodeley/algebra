@@ -6,6 +6,7 @@ import { Caption } from '../../components/ui/Caption'
 import { Eq, EqBlock } from '../../components/ui/Equation'
 import { MatrixTransform } from '../../components/viz/MatrixTransform'
 import { VectorTracker } from '../../components/viz/VectorTracker'
+import { NonlinearWarp } from '../../components/viz/NonlinearWarp'
 import { ACT_LABEL, getNextChapter } from '../../lib/content'
 
 export default function Chapter03() {
@@ -36,6 +37,30 @@ export default function Chapter03() {
           </li>
         </ul>
 
+        <p className="text-[17px] leading-[1.7] text-ink">
+          That is a strict pair of rules, and it is a pair worth feeling
+          before we agree to live with it for the rest of the act. Here
+          are some transformations that fail one or both. The amber pair
+          of curves was originally a pair of straight horizontal lines at{' '}
+          <Eq tex="y = 1" /> and <Eq tex="y = 2" />; the dot is where the
+          origin ended up. Switch the dropdown.
+        </p>
+      </Section>
+
+      <Section width="wide">
+        <NonlinearWarp />
+        <Caption>
+          Identity and shear are linear: origin stays, parallel lines stay
+          parallel, equal spacings stay equal. Translation and off-origin
+          rotation move the origin and so are not linear, even though the
+          grid stays rigid in the rotation case. The quadratic warp and
+          the polar twist break the parallel-lines rule outright. Each of
+          these is an interesting transformation in its own right; none of
+          them is the subject of this chapter.
+        </Caption>
+      </Section>
+
+      <Section width="prose" className="py-12">
         <p className="text-[17px] leading-[1.7] text-ink">
           Equivalently, in algebraic dress, a transformation <em>T</em> is
           linear if it commutes with addition and scaling:
