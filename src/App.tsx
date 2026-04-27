@@ -5,6 +5,9 @@ import { ScrollProgress } from './components/layout/ScrollProgress'
 import { Hero } from './chapters/intro/Hero'
 
 const Chapter01 = lazy(() => import('./chapters/linear-algebra/01-vectors'))
+const Chapter02 = lazy(
+  () => import('./chapters/linear-algebra/02-linear-combinations'),
+)
 
 function ScrollToTopOnNav() {
   const { pathname } = useLocation()
@@ -24,6 +27,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Hero />} />
           <Route path="/01-vectors" element={<Chapter01 />} />
+          <Route
+            path="/02-linear-combinations"
+            element={<Chapter02 />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

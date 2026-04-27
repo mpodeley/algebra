@@ -16,7 +16,7 @@ export const ACT_LABEL: Record<Act, string> = {
 
 export const chapters: Chapter[] = [
   { id: '01-vectors', number: '01', title: 'Vectors', act: 'la', status: 'live' },
-  { id: '02-linear-combinations', number: '02', title: 'Linear combinations, span, basis', act: 'la', status: 'soon' },
+  { id: '02-linear-combinations', number: '02', title: 'Linear combinations, span, basis', act: 'la', status: 'live' },
   { id: '03-linear-transformations', number: '03', title: 'Linear transformations', act: 'la', status: 'soon' },
   { id: '04-matrix-multiplication', number: '04', title: 'Matrix multiplication', act: 'la', status: 'soon' },
   { id: '05-three-d-transformations', number: '05', title: 'Three-dimensional transformations', act: 'la', status: 'soon' },
