@@ -34,7 +34,7 @@ export const chapters: Chapter[] = [
   { id: 'r05-three-ensembles', number: '16', title: 'Three ensembles', act: 'rmt', status: 'live' },
   { id: 'r06-universality', number: '17', title: 'Universality', act: 'rmt', status: 'live' },
   { id: 'r07-applications', number: '18', title: 'Applications: MIMO, ML, finance', act: 'rmt', status: 'live' },
-  { id: 'r08-riemann', number: '19', title: 'The Riemann bridge', act: 'rmt', status: 'soon' },
+  { id: 'r08-riemann', number: '19', title: 'The Riemann bridge', act: 'rmt', status: 'live' },
 ]
 
 export function getChapter(id: string): Chapter | undefined {

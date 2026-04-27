@@ -46,8 +46,9 @@ export function Hero() {
       </section>
 
       <p className="mt-16 text-sm text-mute">
-        Status: chapter 01 is live. The remaining 18 land iteratively as
-        each visualization stabilizes.
+        Nineteen chapters, eighteen interactive widgets, one continuous
+        argument from drag-and-drop arrows in the plane to the spectral
+        statistics of the Riemann zeros.
       </p>
     </main>
   )
