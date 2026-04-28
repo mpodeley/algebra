@@ -56,6 +56,37 @@ function buildSixteenCell() {
   return { vertices, edges }
 }
 
+function buildDuocylinder() {
+  // The Clifford torus — the ridge of the duocylinder D² × D².
+  // Parameterize (θ, φ) ↦ (cos θ, sin θ, cos φ, sin φ). Both circles
+  // sit at radius 1 simultaneously, which is what "ridge" means here.
+  const N_THETA = 10
+  const N_PHI = 10
+  const vertices: Vec4[] = []
+  for (let i = 0; i < N_THETA; i++) {
+    const theta = (2 * Math.PI * i) / N_THETA
+    const ct = Math.cos(theta)
+    const st = Math.sin(theta)
+    for (let j = 0; j < N_PHI; j++) {
+      const phi = (2 * Math.PI * j) / N_PHI
+      const cp = Math.cos(phi)
+      const sp = Math.sin(phi)
+      vertices.push([ct, st, cp, sp])
+    }
+  }
+  const edges: Array<[number, number]> = []
+  for (let i = 0; i < N_THETA; i++) {
+    for (let j = 0; j < N_PHI; j++) {
+      const idx = i * N_PHI + j
+      const nextI = ((i + 1) % N_THETA) * N_PHI + j
+      const nextJ = i * N_PHI + ((j + 1) % N_PHI)
+      edges.push([idx, nextI])
+      edges.push([idx, nextJ])
+    }
+  }
+  return { vertices, edges }
+}
+
 function buildFiveCell() {
   const sqrt5 = Math.sqrt(5)
   // 4 vertices of a 3D tetrahedron at w = 0, plus a 5th lifted along w
@@ -82,14 +113,22 @@ const SHAPES = {
   tesseract: {
     ...buildTesseract(),
     label: 'tesseract — 4-cube · 16 vertices · 32 edges',
+    isMesh: false,
+  },
+  duocylinder: {
+    ...buildDuocylinder(),
+    label: 'duocylinder — Clifford torus ridge · 10×10 mesh',
+    isMesh: true,
   },
   sixteen: {
     ...buildSixteenCell(),
     label: '16-cell — cross-polytope · 8 vertices · 24 edges',
+    isMesh: false,
   },
   five: {
     ...buildFiveCell(),
     label: '5-cell — 4-simplex · 5 vertices · 10 edges',
+    isMesh: false,
   },
 } as const
 
@@ -275,21 +314,22 @@ export function HyperShape() {
                   x2={e.vb.x}
                   y2={e.vb.y}
                   stroke={depthColor(e.avgW)}
-                  strokeWidth={1.75}
-                  strokeOpacity={0.85}
+                  strokeWidth={shape.isMesh ? 1 : 1.75}
+                  strokeOpacity={shape.isMesh ? 0.65 : 0.85}
                   strokeLinecap="round"
                 />
               ))}
-              {/* vertices on top */}
-              {projectedVertices.map((v, idx) => (
-                <circle
-                  key={idx}
-                  cx={v.x}
-                  cy={v.y}
-                  r={2.5}
-                  fill={depthColor(v.w)}
-                />
-              ))}
+              {/* vertices on top — skipped for mesh shapes (too many) */}
+              {!shape.isMesh &&
+                projectedVertices.map((v, idx) => (
+                  <circle
+                    key={idx}
+                    cx={v.x}
+                    cy={v.y}
+                    r={2.5}
+                    fill={depthColor(v.w)}
+                  />
+                ))}
             </g>
           </svg>
         </div>

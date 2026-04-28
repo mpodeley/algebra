@@ -202,6 +202,25 @@ export default function Chapter09() {
           in the shadow.
         </p>
 
+        <p className="mt-6 text-[17px] leading-[1.7] text-ink">
+          The fourth preset, the <em>duocylinder</em>, is the strangest
+          of the four. It is the 4D body{' '}
+          <Eq tex="D^2 \times D^2 = \{(x, y, z, w) : x^2 + y^2 \leq 1 \;\text{and}\; z^2 + w^2 \leq 1\}" />{' '}
+          — the Cartesian product of two disks, one in the{' '}
+          <em>xy</em>-plane and one in the <em>zw</em>-plane. The
+          surface of this body is genuinely 4D-native: nothing built
+          out of unions of polyhedra in our 3D space has the same
+          shape. The mesh you see is the <em>Clifford torus</em>,{' '}
+          <Eq tex="(\cos\theta, \sin\theta, \cos\varphi, \sin\varphi)" />,
+          which is the &ldquo;ridge&rdquo; where both circles sit at
+          radius 1 simultaneously. Topologically it is a torus, but it
+          is <em>flat</em> — every point has zero intrinsic curvature
+          — which no torus embedded in 3D can manage. Watch it rotate
+          and notice how the two interlocked rings of the projection
+          weave through each other: that is the geometric signature of
+          a flat torus seen edge-on through 4D.
+        </p>
+
         <KeyInsight>
           <p>
             A change of basis need not be square. Four vectors in 3D
