@@ -5,6 +5,7 @@ import { KeyInsight } from '../../components/layout/KeyInsight'
 import { Caption } from '../../components/ui/Caption'
 import { Eq } from '../../components/ui/Equation'
 import { PolynomialBasis } from '../../components/viz/PolynomialBasis'
+import { ImageAsVector } from '../../components/viz/ImageAsVector'
 import { ACT_LABEL, getNextChapter } from '../../lib/content'
 
 export default function Chapter11() {
@@ -114,6 +115,56 @@ export default function Chapter11() {
         </KeyInsight>
 
         <p className="text-[17px] leading-[1.7] text-ink">
+          A more startling example: an <em>image</em>. A 96×96 grayscale
+          photograph is a vector in <Eq tex="\mathbb{R}^{9216}" /> — one
+          coordinate per pixel intensity. Two photographs can be added
+          (pixel by pixel); a photograph can be scaled (every pixel
+          multiplied). And — surprisingly — most of the operations
+          people apply to images in practice are{' '}
+          <em>linear transformations</em> of this gigantic vector. A
+          Gaussian blur is a single 9216×9216 matrix that happens to be
+          sparse. Edge detection is a different 9216×9216 matrix.
+          Sharpening is a linear combination of those two. None of this
+          is a metaphor: the operations are literally matrix-vector
+          multiplications on the pixel vector, and the matrix machinery
+          we built for arrows in the plane handles them without any
+          adjustment.
+        </p>
+      </Section>
+
+      <Section width="wide">
+        <ImageAsVector />
+        <Caption>
+          The same Mona Lisa-flavoured silhouette, treated as a
+          high-dimensional vector. Each filter is a different linear (or
+          in one case, non-linear) transformation of that vector. The
+          most consequential one for the rest of this essay is{' '}
+          <em>compress</em>: project the image onto its top-K basis
+          components in a Fourier-like basis (the discrete cosine
+          transform). With K = 30 you already see a recognizable
+          portrait; with K = 200 you see almost the original. That trick
+          is the conceptual core of JPEG, of PCA, of every dimension-
+          reduction algorithm — and of the random-matrix &ldquo;bulk
+          versus signal&rdquo; decomposition that opens act two.
+        </Caption>
+      </Section>
+
+      <Section width="prose" className="py-12">
+        <p className="text-[17px] leading-[1.7] text-ink">
+          The compression observation deserves a moment. The pixel vector
+          lives in 9216 dimensions, but for any natural image, almost all
+          of the &ldquo;mass&rdquo; — the energy in the right basis —
+          concentrates in a handful of components. Out of 9216
+          coordinates, the first 30 carry the whole portrait; the
+          remaining 9186 carry texture, grain, and noise. That fact is
+          one direction of the same lever Wigner pulled when he replaced
+          a complicated Hamiltonian with a random matrix: in a vector
+          space large enough for almost everything to be noise, the
+          structure that survives the noise is universal, low-rank, and
+          recoverable.
+        </p>
+
+        <p className="mt-6 text-[17px] leading-[1.7] text-ink">
           One example of an abstract vector space deserves its own bridge
           paragraph because the second act of this essay lives inside it:
           the space of <em>2×2 matrices</em>. Add two matrices entry by
