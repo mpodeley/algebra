@@ -5,6 +5,7 @@ import { KeyInsight } from '../../components/layout/KeyInsight'
 import { Caption } from '../../components/ui/Caption'
 import { Eq, EqBlock } from '../../components/ui/Equation'
 import { EigenvectorFinder } from '../../components/viz/EigenvectorFinder'
+import { FibonacciGolden } from '../../components/viz/FibonacciGolden'
 import { ACT_LABEL, getNextChapter } from '../../lib/content'
 
 export default function Chapter10() {
@@ -126,6 +127,75 @@ export default function Chapter10() {
           numbers <Eq tex="\lambda_1, \lambda_2" />, with{' '}
           <Eq tex="\mathbf{B}" /> playing the supporting role of giving
           you the basis where those two numbers act in isolation.
+        </p>
+
+        <p className="mt-6 text-[17px] leading-[1.7] text-ink">
+          One small example justifies the rest of the apparatus. Consider
+          the matrix
+        </p>
+
+        <EqBlock tex="\mathbf{F} = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}." />
+
+        <p className="text-[17px] leading-[1.7] text-ink">
+          Apply <Eq tex="\mathbf{F}" /> to <Eq tex="(F_{n}, F_{n-1})" />{' '}
+          and you get <Eq tex="(F_{n} + F_{n-1}, F_{n}) = (F_{n+1}, F_{n})" />.{' '}
+          So <Eq tex="\mathbf{F}^n (1, 0)^\top = (F_{n+1}, F_n)" />: the
+          <em> n-th iterate of F applied to the seed gives the n-th and
+          (n+1)-th Fibonacci numbers</em>. The Fibonacci recurrence is
+          a matrix.
+        </p>
+
+        <p className="mt-6 text-[17px] leading-[1.7] text-ink">
+          Compute the eigenvalues. The characteristic polynomial is{' '}
+          <Eq tex="\lambda^2 - \lambda - 1 = 0" />, whose roots are the
+          two famous numbers
+        </p>
+
+        <EqBlock tex="\varphi = \tfrac{1+\sqrt{5}}{2} \approx 1.618, \qquad -\tfrac{1}{\varphi} = \tfrac{1-\sqrt{5}}{2} \approx -0.618." />
+
+        <p className="text-[17px] leading-[1.7] text-ink">
+          The first is the <em>golden ratio</em>. It is an eigenvalue of
+          the matrix that builds the Fibonacci sequence — and that one
+          fact pins down everything famous about Fibonacci numbers, all
+          at once. The dominant eigenvalue is <Eq tex="\varphi" /> (with
+          larger absolute value than <Eq tex="-1/\varphi" />), so over
+          many iterations any vector aligns with the
+          <Eq tex="\varphi" />-eigenvector and grows by a factor of{' '}
+          <Eq tex="\varphi" /> at each step. That is why the ratio{' '}
+          <Eq tex="F_{n+1}/F_n \to \varphi" />.
+        </p>
+      </Section>
+
+      <Section width="wide">
+        <FibonacciGolden />
+        <Caption>
+          The amber line is the <Eq tex="\varphi" />-eigenvector
+          direction; the dashed purple line is the <Eq tex="-1/\varphi" />
+          {' '}eigenvector. Drag <em>v₀</em> anywhere; the teal trail is
+          the rescaled iterate <Eq tex="\mathbf{F}^k v_0 / \varphi^k" />,
+          which collapses to a fixed point on the amber line at rate{' '}
+          <Eq tex="(1/\varphi^2)^k \approx 0.38^k" />. With <em>v₀</em>{' '}
+          set to <Eq tex="(1, 0)" /> via the button, the unscaled
+          iterates are exactly the Fibonacci pairs{' '}
+          <Eq tex="(F_{n+1}, F_n)" /> — and the ratio readout below the
+          canvas shows <Eq tex="F_{n+1}/F_n" /> converging to{' '}
+          <Eq tex="\varphi" /> in real time.
+        </Caption>
+      </Section>
+
+      <Section width="prose" className="py-12">
+        <p className="text-[17px] leading-[1.7] text-ink">
+          Two observations worth pinning down. First, if you start{' '}
+          <em>v₀</em> on either eigenvector line, the iterates stay on
+          that line forever — eigenvectors are <em>invariant</em>{' '}
+          directions in exactly the sense the chapter started with.
+          Second, every other starting vector eventually aligns with the
+          dominant eigenvector, regardless of where it began. This is
+          the <em>power-method</em> intuition: iterating any matrix
+          repeatedly aligns vectors to the eigenvector with the largest
+          eigenvalue, and is, mutatis mutandis, the engine of Google's
+          PageRank, of finite-element solvers, and of much of the
+          numerical-linear-algebra toolbox.
         </p>
 
         <p className="mt-6 text-[17px] leading-[1.7] text-ink">
